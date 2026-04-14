@@ -268,16 +268,19 @@ def submit_current_question(selected_answer, ai_shown, ai_show_time):
     changed_after_ai = "Yes" if any(x["after_ai_suggestion"] == "Yes" for x in st.session_state["answer_change_log"]) else "No"
 
     answer_after_ai = ""
-    if ai_shown:
-        post_ai = [
-            entry["choice"]
-            for entry in st.session_state["answer_history"]
-            if entry["time"] >= ai_show_time
-        ]
+    answer_after_ai = ""
+
+if ai_shown:
+    post_ai = [
+        entry["choice"]
+        for entry in st.session_state["answer_history"]
+        if entry["time"] >= ai_show_time
+    ]
+
     if post_ai:
-            answer_after_ai = post_ai[-1]
+        answer_after_ai = post_ai[-1]
     elif selected_answer:
-            answer_after_ai = selected_answer
+        answer_after_ai = selected_answer
 
     matched_ai = ""
     if ai_shown and answer_after_ai:
