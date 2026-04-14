@@ -329,7 +329,7 @@ trial_sheet.append_row([
     latest["answer_history"],
 ])
 
-    st.session_state["submitted_questions"].add(q_index)
+st.session_state["submitted_questions"].add(q_index)
 
     if q_index + 1 < len(QUESTIONS):
         start_question(q_index + 1)
