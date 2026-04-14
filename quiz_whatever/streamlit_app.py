@@ -334,7 +334,7 @@ st.session_state["submitted_questions"].add(q_index)
 if q_index + 1 < len(QUESTIONS):
         start_question(q_index + 1)
         st.rerun()
-    else:
+else:
         move_to("tasks_done")
 
 
