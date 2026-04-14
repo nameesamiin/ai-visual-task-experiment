@@ -247,6 +247,100 @@ def record_selection(choice, ai_shown, elapsed):
         })
         st.session_state["answer_history"].append({"choice": choice, "time": round(elapsed, 3)})
         st.session_state["last_selected"] = choice
+             def submit_current_question(selected_answer, ai_shown, ai_show_time):
+    q_index = st.session_state["current_question_index"]
+    q = QUESTIONS[q_index]
+
+    if q_index in st.session_state["submitted_questions"]:
+        return
+
+    total_time = round(time.time() - st.session_state["question_start_time"], 3)
+
+    if not st.session_state["answer_history"] and selected_answer:
+        st.session_state["answer_history"].append({
+            "choice": selected_answer,
+            "time": total_time
+        })
+
+    first_answer = st.session_state["answer_history"][0]["choice"] if st.session_state["answer_history"] else ""
+    first_answer_time = st.session_state["answer_history"][0]["time"] if st.session_state["answer_history"] else ""
+    change_count = len(st.session_state["answer_change_log"])
+    changed_after_ai = "Yes" if any(x["after_ai_suggestion"] == "Yes" for x in st.session_state["answer_change_log"]) else "No"
+
+    answer_after_ai = ""
+    if ai_shown:
+        post_ai = [
+            entry["choice"]
+            for entry in st.session_state["answer_history"]
+            if entry["time"] >= ai_show_time
+        ]
+        if post_ai:
+            answer_after_ai = post_ai[-1]
+        elif selected_answer:
+            answer_after_ai = selected_answer
+
+    matched_ai = ""
+    if ai_shown and answer_after_ai:
+        matched_ai = "Yes" if answer_after_ai == q["ai_suggestion"] else "No"
+
+    st.session_state["trial_results"].append({
+        "participant_id": st.session_state["participant_id"],
+        "age": st.session_state["age"],
+        "sex_assigned_at_birth": st.session_state["sex_assigned_at_birth"],
+        "question_number": q["id"],
+        "image_file": q["image"],
+        "condition": q["condition"],
+        "correct_answer": q["correct"],
+        "ai_suggestion": q["ai_suggestion"],
+        "ai_shown": "Yes" if ai_shown else "No",
+        "ai_show_time_seconds": ai_show_time if ai_shown else "",
+        "first_answer": first_answer,
+        "first_answer_time_seconds": first_answer_time,
+        "final_answer": selected_answer,
+        "final_answer_time_seconds": total_time,
+        "was_correct": "Yes" if selected_answer == q["correct"] else "No",
+        "number_of_changes": change_count,
+        "changed_after_ai_suggestion": changed_after_ai,
+        "answer_after_ai_suggestion": answer_after_ai,
+        "matched_ai_suggestion": matched_ai,
+        "change_log": str(st.session_state["answer_change_log"]),
+        "answer_history": str(st.session_state["answer_history"]),
+    })
+
+    trial_sheet = get_trial_sheet()
+    latest = st.session_state["trial_results"][-1]
+
+    trial_sheet.append_row([
+        latest["participant_id"],
+        latest["age"],
+        latest["sex_assigned_at_birth"],
+        latest["question_number"],
+        latest["image_file"],
+        latest["condition"],
+        latest["correct_answer"],
+        latest["ai_suggestion"],
+        latest["ai_shown"],
+        latest["ai_show_time_seconds"],
+        latest["first_answer"],
+        latest["first_answer_time_seconds"],
+        latest["final_answer"],
+        latest["final_answer_time_seconds"],
+        latest["was_correct"],
+        latest["number_of_changes"],
+        latest["changed_after_ai_suggestion"],
+        latest["answer_after_ai_suggestion"],
+        latest["matched_ai_suggestion"],
+        latest["change_log"],
+        latest["answer_history"],
+    ])
+
+    st.session_state["submitted_questions"].add(q_index)
+
+    if q_index + 1 < len(QUESTIONS):
+        start_question(q_index + 1)
+        st.rerun()
+    else:
+        move_to("tasks_done")
 
 
 def submit_current_question(selected_answer, ai_shown, ai_show_time):
