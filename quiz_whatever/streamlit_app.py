@@ -331,7 +331,7 @@ trial_sheet.append_row([
 
 st.session_state["submitted_questions"].add(q_index)
 
-    if q_index + 1 < len(QUESTIONS):
+if q_index + 1 < len(QUESTIONS):
         start_question(q_index + 1)
         st.rerun()
     else:
