@@ -414,7 +414,7 @@ for i, item in enumerate(QUESTIONNAIRE_ITEMS, start=1):
         )
         responses.append((i, item, response))
 
-    if st.button("Next"):
+if st.button("Next"):
         st.session_state["questionnaire_results"] = []
         total = 0
         for i, item, response in responses:
