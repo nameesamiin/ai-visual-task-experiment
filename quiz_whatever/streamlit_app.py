@@ -342,38 +342,6 @@ def submit_current_question(selected_answer, ai_shown, ai_show_time):
     else:
         move_to("tasks_done")
 
-    st.session_state["trial_results"].append({
-    "participant_id": st.session_state["participant_id"],
-    "age": st.session_state["age"],
-    "sex_assigned_at_birth": st.session_state["sex_assigned_at_birth"],
-    "question_number": q["id"],
-    "image_file": q["image"],
-    "condition": q["condition"],
-    "correct_answer": q["correct"],
-    "ai_suggestion": q["ai_suggestion"],
-    "ai_shown": "Yes" if ai_shown else "No",
-    "ai_show_time_seconds": ai_show_time if ai_shown else "",
-    "first_answer": first_answer,
-    "first_answer_time_seconds": first_answer_time,
-    "final_answer": selected_answer,
-    "final_answer_time_seconds": total_time,
-    "was_correct": "Yes" if selected_answer == q["correct"] else "No",
-    "number_of_changes": change_count,
-    "changed_after_ai_suggestion": changed_after_ai,
-    "answer_after_ai_suggestion": answer_after_ai,
-    "matched_ai_suggestion": matched_ai,
-    "change_log": str(st.session_state["answer_change_log"]),
-    "answer_history": str(st.session_state["answer_history"]),
-})
-
-st.session_state["submitted_questions"].add(q_index)
-
-if q_index + 1 < len(QUESTIONS):
-        start_question(q_index + 1)
-        st.rerun()
-else:
-        move_to("tasks_done")
-
 
 init_state()
 
