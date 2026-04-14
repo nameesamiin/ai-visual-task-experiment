@@ -19,7 +19,7 @@ creds = service_account.Credentials.from_service_account_info(
 
 client = gspread.authorize(creds)
 
-sheet = client.open("AI experiment data").sheet1
+sheet = client.open_by_key("1vwuUFAWC9GWZepy3VKgtrkChi664I6APsZh4xWrd5GI").sheet1
 
 st.set_page_config(page_title="AI-Supported Visual Tasks", layout="wide")
 
