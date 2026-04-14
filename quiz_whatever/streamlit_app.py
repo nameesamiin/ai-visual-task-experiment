@@ -276,7 +276,7 @@ def submit_current_question(selected_answer, ai_shown, ai_show_time):
         ]
     if post_ai:
             answer_after_ai = post_ai[-1]
-        elif selected_answer:
+    elif selected_answer:
             answer_after_ai = selected_answer
 
     matched_ai = ""
