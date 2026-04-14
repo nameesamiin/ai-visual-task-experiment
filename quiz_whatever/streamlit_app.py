@@ -432,7 +432,7 @@ elif page == "questionnaire":
         )
         responses.append((i, item, response))
 
-   if st.button("Next"):
+    if st.button("Next"):
     total = 0
 
     for i, item, response in responses:
