@@ -19,8 +19,16 @@ creds = service_account.Credentials.from_service_account_info(
 
 client = gspread.authorize(creds)
 
-def get_sheet():
-    return client.open_by_key("1vwuUFAWC9GWZepy3VKgtrkChi664I6APsZh4xWrd5GI").sheet1
+def get_workbook():
+    return client.open_by_key("1vwuUFAWC9GWZepy3VKgtrkChi664I6APsZh4xWrd5GI")
+
+
+def get_trial_sheet():
+    return get_workbook().worksheet("Trial_Results")
+
+
+def get_questionnaire_sheet():
+    return get_workbook().worksheet("Questionnaire_Results")
 
 st.set_page_config(page_title="AI-Supported Visual Tasks", layout="wide")
 
@@ -271,28 +279,55 @@ def submit_current_question(selected_answer, ai_shown, ai_show_time):
         matched_ai = "Yes" if answer_after_ai == q["ai_suggestion"] else "No"
 
     st.session_state["trial_results"].append({
-        "participant_id": st.session_state["participant_id"],
-        "age": st.session_state["age"],
-        "sex_assigned_at_birth": st.session_state["sex_assigned_at_birth"],
-        "question_number": q["id"],
-        "image_file": q["image"],
-        "condition": q["condition"],
-        "correct_answer": q["correct"],
-        "ai_suggestion": q["ai_suggestion"],
-        "ai_shown": "Yes" if ai_shown else "No",
-        "ai_show_time_seconds": ai_show_time if ai_shown else "",
-        "first_answer": first_answer,
-        "first_answer_time_seconds": first_answer_time,
-        "final_answer": selected_answer,
-        "final_answer_time_seconds": total_time,
-        "was_correct": "Yes" if selected_answer == q["correct"] else "No",
-        "number_of_changes": change_count,
-        "changed_after_ai_suggestion": changed_after_ai,
-        "answer_after_ai_suggestion": answer_after_ai,
-        "matched_ai_suggestion": matched_ai,
-        "change_log": str(st.session_state["answer_change_log"]),
-        "answer_history": str(st.session_state["answer_history"]),
-    })
+    "participant_id": st.session_state["participant_id"],
+    "age": st.session_state["age"],
+    "sex_assigned_at_birth": st.session_state["sex_assigned_at_birth"],
+    "question_number": q["id"],
+    "image_file": q["image"],
+    "condition": q["condition"],
+    "correct_answer": q["correct"],
+    "ai_suggestion": q["ai_suggestion"],
+    "ai_shown": "Yes" if ai_shown else "No",
+    "ai_show_time_seconds": ai_show_time if ai_shown else "",
+    "first_answer": first_answer,
+    "first_answer_time_seconds": first_answer_time,
+    "final_answer": selected_answer,
+    "final_answer_time_seconds": total_time,
+    "was_correct": "Yes" if selected_answer == q["correct"] else "No",
+    "number_of_changes": change_count,
+    "changed_after_ai_suggestion": changed_after_ai,
+    "answer_after_ai_suggestion": answer_after_ai,
+    "matched_ai_suggestion": matched_ai,
+    "change_log": str(st.session_state["answer_change_log"]),
+    "answer_history": str(st.session_state["answer_history"]),
+})
+
+trial_sheet = get_trial_sheet()
+latest = st.session_state["trial_results"][-1]
+
+trial_sheet.append_row([
+    latest["participant_id"],
+    latest["age"],
+    latest["sex_assigned_at_birth"],
+    latest["question_number"],
+    latest["image_file"],
+    latest["condition"],
+    latest["correct_answer"],
+    latest["ai_suggestion"],
+    latest["ai_shown"],
+    latest["ai_show_time_seconds"],
+    latest["first_answer"],
+    latest["first_answer_time_seconds"],
+    latest["final_answer"],
+    latest["final_answer_time_seconds"],
+    latest["was_correct"],
+    latest["number_of_changes"],
+    latest["changed_after_ai_suggestion"],
+    latest["answer_after_ai_suggestion"],
+    latest["matched_ai_suggestion"],
+    latest["change_log"],
+    latest["answer_history"],
+])
 
     st.session_state["submitted_questions"].add(q_index)
 
