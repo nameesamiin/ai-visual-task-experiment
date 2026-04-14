@@ -393,14 +393,16 @@ elif page == "questionnaire":
     st.markdown("### Instructions")
     st.write("Please indicate to what extent the following statements apply to you. Use the following scale to record your answers:")
 
-    scale_df = pd.DataFrame({
-        "1": [QUESTIONNAIRE_SCALE[0][1]],
-        "2": [QUESTIONNAIRE_SCALE[1][1]],
-        "3": [QUESTIONNAIRE_SCALE[2][1]],
-        "4": [QUESTIONNAIRE_SCALE[3][1]],
-        "5": [QUESTIONNAIRE_SCALE[4][1]],
-    })
-    st.table(scale_df)
+    scale_df = pd.DataFrame([
+    {
+        "1": QUESTIONNAIRE_SCALE[1],
+        "2": QUESTIONNAIRE_SCALE[2],
+        "3": QUESTIONNAIRE_SCALE[3],
+        "4": QUESTIONNAIRE_SCALE[4],
+        "5": QUESTIONNAIRE_SCALE[5],
+    }
+])
+st.table(scale_df)
 
     responses = []
     for i, item in enumerate(QUESTIONNAIRE_ITEMS, start=1):
