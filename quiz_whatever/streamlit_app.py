@@ -405,7 +405,7 @@ elif page == "questionnaire":
 st.table(scale_df)
 
 responses = []
-    for i, item in enumerate(QUESTIONNAIRE_ITEMS, start=1):
+for i, item in enumerate(QUESTIONNAIRE_ITEMS, start=1):
         response = st.radio(
             f"{i}. {item}",
             [1, 2, 3, 4, 5],
