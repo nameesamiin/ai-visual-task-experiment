@@ -247,7 +247,7 @@ def record_selection(choice, ai_shown, elapsed):
         })
         st.session_state["answer_history"].append({"choice": choice, "time": round(elapsed, 3)})
         st.session_state["last_selected"] = choice
-             def submit_current_question(selected_answer, ai_shown, ai_show_time):
+def submit_current_question(selected_answer, ai_shown, ai_show_time):
     q_index = st.session_state["current_question_index"]
     q = QUESTIONS[q_index]
 
