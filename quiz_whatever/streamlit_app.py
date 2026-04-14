@@ -154,7 +154,6 @@ def clean_colored_highlights(image):
 
 def load_clean_question_image(path):
     image = Image.open(path)
-    image = clean_colored_highlights(image)
     return image
 
 
