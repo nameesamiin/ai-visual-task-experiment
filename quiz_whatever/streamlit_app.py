@@ -19,7 +19,8 @@ creds = service_account.Credentials.from_service_account_info(
 
 client = gspread.authorize(creds)
 
-sheet = client.open_by_key("1vwuUFAWC9GWZepy3VKgtrkChi664I6APsZh4xWrd5GI").sheet1
+def get_sheet():
+    return client.open_by_key("1vwuUFAWC9GWZepy3VKgtrkChi664I6APsZh4xWrd5GI").sheet1
 
 st.set_page_config(page_title="AI-Supported Visual Tasks", layout="wide")
 
@@ -430,12 +431,13 @@ elif page == "questionnaire":
         responses.append((i, item, response))
 
     if st.button("Next"):
+        worksheet = get_sheet()
         total = 0
 
     for i, item, response in responses:
         total += int(response)
 
-        sheet.append_row([
+        worksheet.append_row([
             st.session_state["participant_id"],
             i,
             item,
@@ -443,7 +445,7 @@ elif page == "questionnaire":
             int(response)
         ])
 
-    sheet.append_row([
+    worksheet.append_row([
         st.session_state["participant_id"],
         "TOTAL",
         "",
