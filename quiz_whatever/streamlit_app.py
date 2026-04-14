@@ -434,15 +434,15 @@ elif page == "questionnaire":
         worksheet = get_sheet()
         total = 0
 
-    for i, item, response in responses:
-        total += int(response)
+        for i, item, response in responses:
+            total += int(response)
 
-        worksheet.append_row([
-            st.session_state["participant_id"],
-            i,
-            item,
-            response,
-            int(response)
+            worksheet.append_row([
+                st.session_state["participant_id"],
+                i,
+                item,
+                response,
+                int(response)
         ])
 
     worksheet.append_row([
