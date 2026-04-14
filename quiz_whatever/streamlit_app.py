@@ -391,21 +391,24 @@ elif page == "tasks_done":
 elif page == "questionnaire":
     st.header("Questionnaire")
     st.markdown("### Instructions")
-    st.write("Please indicate to what extent the following statements apply to you. Use the following scale to record your answers:")
+    st.write(
+        "Please indicate to what extent the following statements apply to you. "
+        "Use the following scale to record your answers:"
+    )
 
     scale_df = pd.DataFrame([
-    {
-        "1": QUESTIONNAIRE_SCALE[1],
-        "2": QUESTIONNAIRE_SCALE[2],
-        "3": QUESTIONNAIRE_SCALE[3],
-        "4": QUESTIONNAIRE_SCALE[4],
-        "5": QUESTIONNAIRE_SCALE[5],
-    }
-])
-st.table(scale_df)
+        {
+            "1": QUESTIONNAIRE_SCALE[1],
+            "2": QUESTIONNAIRE_SCALE[2],
+            "3": QUESTIONNAIRE_SCALE[3],
+            "4": QUESTIONNAIRE_SCALE[4],
+            "5": QUESTIONNAIRE_SCALE[5],
+        }
+    ])
+    st.table(scale_df)
 
-responses = []
-for i, item in enumerate(QUESTIONNAIRE_ITEMS, start=1):
+    responses = []
+    for i, item in enumerate(QUESTIONNAIRE_ITEMS, start=1):
         response = st.radio(
             f"{i}. {item}",
             [1, 2, 3, 4, 5],
@@ -414,9 +417,10 @@ for i, item in enumerate(QUESTIONNAIRE_ITEMS, start=1):
         )
         responses.append((i, item, response))
 
-if st.button("Next"):
+    if st.button("Next"):
         st.session_state["questionnaire_results"] = []
         total = 0
+
         for i, item, response in responses:
             total += int(response)
             st.session_state["questionnaire_results"].append({
@@ -426,9 +430,10 @@ if st.button("Next"):
                 "response": response,
                 "numeric_score": int(response),
             })
+
         st.session_state["questionnaire_total"] = total
         move_to("debrief")
-
+        
 elif page == "debrief":
     st.header("Participant Debrief")
     render_sections(DEBRIEF_SECTIONS)
