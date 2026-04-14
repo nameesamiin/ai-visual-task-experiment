@@ -1,3 +1,5 @@
+import gspread
+from google.oauth2 import service_account
 import streamlit as st
 from PIL import Image, ImageOps
 import pandas as pd
@@ -5,6 +7,19 @@ import os
 import time
 import random
 from datetime import datetime
+
+# GOOGLE SHEETS SETUP
+scope = ["https://www.googleapis.com/auth/spreadsheets",
+         "https://www.googleapis.com/auth/drive"]
+
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=scope
+)
+
+client = gspread.authorize(creds)
+
+sheet = client.open("AI experiment data").sheet1
 
 st.set_page_config(page_title="AI-Supported Visual Tasks", layout="wide")
 
@@ -417,22 +432,32 @@ elif page == "questionnaire":
         )
         responses.append((i, item, response))
 
-    if st.button("Next"):
-        st.session_state["questionnaire_results"] = []
-        total = 0
+   if st.button("Next"):
+    total = 0
 
-        for i, item, response in responses:
-            total += int(response)
-            st.session_state["questionnaire_results"].append({
-                "participant_id": st.session_state["participant_id"],
-                "item_number": i,
-                "questionnaire_item": item,
-                "response": response,
-                "numeric_score": int(response),
-            })
+    for i, item, response in responses:
+        total += int(response)
 
-        st.session_state["questionnaire_total"] = total
-        move_to("debrief")
+        # SAVE EACH RESPONSE TO GOOGLE SHEET
+        sheet.append_row([
+            st.session_state["participant_id"],
+            i,
+            item,
+            response,
+            int(response)
+        ])
+
+    # SAVE TOTAL SCORE
+    sheet.append_row([
+        st.session_state["participant_id"],
+        "TOTAL",
+        "",
+        "",
+        total
+    ])
+
+    st.session_state["questionnaire_total"] = total
+    move_to("debrief")
         
 elif page == "debrief":
     st.header("Participant Debrief")
