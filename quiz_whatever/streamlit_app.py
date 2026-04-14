@@ -433,12 +433,11 @@ elif page == "questionnaire":
         responses.append((i, item, response))
 
     if st.button("Next"):
-    total = 0
+        total = 0
 
     for i, item, response in responses:
         total += int(response)
 
-        # SAVE EACH RESPONSE TO GOOGLE SHEET
         sheet.append_row([
             st.session_state["participant_id"],
             i,
@@ -447,7 +446,6 @@ elif page == "questionnaire":
             int(response)
         ])
 
-    # SAVE TOTAL SCORE
     sheet.append_row([
         st.session_state["participant_id"],
         "TOTAL",
